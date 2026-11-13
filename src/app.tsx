@@ -31,5 +31,13 @@ export function createApp(config: RigConfig = loadConfig()) {
     );
   });
 
+  // The page and the JSON must never disagree: both render readNight's rows unchanged.
+  app.get('/api/digest/:night', (c) => {
+    const night = c.req.param('night');
+    const digest = readNight(config.runsDir, night);
+    if (!digest) return c.json({ error: 'no digest for this night', night }, 404);
+    return c.json(digest);
+  });
+
   return app;
 }
